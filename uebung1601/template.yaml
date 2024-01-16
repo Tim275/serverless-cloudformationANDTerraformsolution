@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  uebung1601
+
+  Sample SAM Template for uebung1601
+
+Resources:
+  uebungapi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors: "'*'"
+
+  SaveFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handler/
+      Handler: save.saveHandler
+      Runtime: nodejs14.x
+      Events:
+        Save:
+          Type: Api
+          Properties:
+            Path: /save
+            Method: post
+            RestApiId: !Ref uebungapi
+
+  SayHiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handler/
+      Handler: sayhi.sayHiHandler
+      Runtime: nodejs14.x
+      Events:
+        SayHi:
+          Type: Api
+          Properties:
+            Path: /say-hi
+            Method: get
+            RestApiId: !Ref uebungapi
+
+  RemoveFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handler/
+      Handler: remove.removeHandler
+      Runtime: nodejs14.x
+      Events:
+        Remove:
+          Type: Api
+          Properties:
+            Path: /remove
+            Method: delete
+            RestApiId: !Ref uebungapi
+
+Outputs:
+  uebungapi:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${uebungapi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
